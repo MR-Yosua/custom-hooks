@@ -1,0 +1,27 @@
+import { useEffect, useState } from "react";
+
+export const useFetch = (
+  Base_url = "",
+  error_msg = "An error has ocurred getting the data"
+) => {
+  const [data, SetData] = useState([]);
+  const [loading, SetLoading] = useState(false);
+  const [error, SetError] = useState("");
+
+  useEffect(() => {
+    const fetchData = async () => {
+      SetLoading(true);
+      const response = await fetch(Base_url);
+      if (!response.ok) {
+        SetError(response.status);
+        throw new Error(error);
+      }
+      const res_data = await response.json();
+      return res_data;
+    };
+    fetchData().then((data) => SetData(data));
+    SetLoading(false);
+  }, [Base_url, error_msg]);
+
+  return { data, loading, error };
+};
